@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+@theme {
+  /* === SEEKER PLATFORM TOKENS === */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+
+  /* === EMPLOYER PLATFORM TOKENS === */
+  --color-emp-50: #f0fdf4;
+  --color-emp-100: #dcfce7;
+  --color-emp-200: #bbf7d0;
+  --color-emp-300: #86efac;
+  --color-emp-400: #4ade80;
+  --color-emp-500: #22c55e;
+  --color-emp-600: #16a34a;
+  --color-emp-700: #15803d;
+  --color-emp-800: #166534;
+  --color-emp-900: #14532d;
+
+  /* === ADMIN PLATFORM TOKENS === */
+  --color-adm-50: #fdf4ff;
+  --color-adm-100: #fae8ff;
+  --color-adm-200: #f5d0fe;
+  --color-adm-300: #f0abfc;
+  --color-adm-400: #e879f9;
+  --color-adm-500: #d946ef;
+  --color-adm-600: #c026d3;
+  --color-adm-700: #a21caf;
+  --color-adm-800: #86198f;
+  --color-adm-900: #701a75;
+
+  /* === NEUTRAL === */
+  --color-surface-50: #f8fafc;
+  --color-surface-100: #f1f5f9;
+  --color-surface-200: #e2e8f0;
+  --color-surface-300: #cbd5e1;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #64748b;
+  --color-surface-600: #475569;
+  --color-surface-700: #334155;
+  --color-surface-800: #1e293b;
+  --color-surface-900: #0f172a;
+  --color-surface-950: #020617;
+
+  /* === TYPOGRAPHY === */
+  --font-sans: 'Inter', 'system-ui', sans-serif;
+
+  /* === RADIUS === */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { font-family: var(--font-sans); scroll-behavior: smooth; }
+
+  body {
+    @apply bg-surface-50 text-surface-900 antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body,
+  body.dark {
+    @apply bg-surface-950 text-surface-100;
+  }
+
+  h1,h2,h3,h4,h5,h6 { @apply font-bold tracking-tight; }
+  a { @apply transition-colors duration-200; }
+  button { @apply cursor-pointer; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-surface-100; }
+  ::-webkit-scrollbar-thumb { @apply bg-surface-300 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-surface-400; }
+
+  .dark ::-webkit-scrollbar-track { @apply bg-surface-800; }
+  .dark ::-webkit-scrollbar-thumb { @apply bg-surface-600; }
+}
+
+@layer utilities {
+  /* Glass morphism */
+  .glass {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .glass-dark {
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* Gradient text */
+  .gradient-text-blue {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gradient-text-green {
+    background: linear-gradient(135deg, #22c55e, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gradient-text-purple {
+    background: linear-gradient(135deg, #d946ef, #f43f5e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-surface-200 transition-all duration-300;
+  }
+  .dark .card {
+    @apply bg-surface-800 border-surface-700;
+  }
+  .card-hover:hover {
+    @apply shadow-lg -translate-y-0.5;
+  }
+
+  /* Animate */
+  .fade-in { animation: fadeIn 0.4s ease both; }
+  .slide-up { animation: slideUp 0.5s ease both; }
+  .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulseDot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.7; }
+  }
+
+  /* Skeleton */
+  .skeleton {
+    @apply bg-surface-200 rounded-lg animate-pulse;
+  }
+  .dark .skeleton {
+    @apply bg-surface-700;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+}
