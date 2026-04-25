@@ -222,8 +222,9 @@ onMounted(async () => {
       const app_res = await seekerApi.get(`/jobs/${route.params.id}/applied-status`).catch(()=>({data:{applied:false}}))
       alreadyApplied.value = app_res.data.applied
     }
-  } catch {
-    job.value = { id: route.params.id, title: 'Senior Frontend Developer', company: { name: 'TechCorp', description: 'Leading software company building the future.' }, location: 'San Francisco, CA', type: 'Full-time', salaryMin: 120000, salaryMax: 160000, tags: ['React', 'TypeScript', 'GraphQL', 'REST APIs'], description: 'We are looking for a talented Senior Frontend Developer to join our team.\n\nYou will work on building scalable, high-performance web applications used by millions of users worldwide. You\'ll collaborate closely with our product and design teams.', requirements: 'At least 5 years of experience with React\nStrong TypeScript skills\nExperience with state management (Redux, Zustand)\nFamiliarity with REST APIs and GraphQL\nExcellent communication skills', experienceLevel: 'Senior Level', remote: true, createdAt: new Date().toISOString(), deadline: new Date(Date.now() + 30*86400000).toISOString() }
+  } catch (err) {
+    console.error('Failed to load job details', err)
+    job.value = null
   } finally { loading.value = false }
 })
 </script>

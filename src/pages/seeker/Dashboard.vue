@@ -133,31 +133,16 @@ onMounted(async () => {
     recentApps.value = appsRes.data.content || appsRes.data || []
     savedJobs.value  = savedRes.data.content || savedRes.data || []
     if (statsRes.data) {
-      stats.value[0].value = statsRes.data.totalApplications || '0'
-      stats.value[3].value = statsRes.data.interviews || '0'
+      stats.value[0].value = (statsRes.data.totalApplications || 0).toString()
+      stats.value[3].value = (statsRes.data.interviews || 0).toString()
     }
     stats.value[2].value = (savedRes.data.totalElements || savedJobs.value.length).toString()
-  } catch {
-    recentApps.value = sampleApps()
-    savedJobs.value  = sampleSaved()
-    stats.value[0].value = '5'
-    stats.value[1].value = '23'
-    stats.value[2].value = '3'
-    stats.value[3].value = '1'
+    // Profile views (mocked)
+    stats.value[1].value = Math.floor(Math.random() * 50).toString()
+  } catch (err) {
+    console.error('Failed to load seeker dashboard', err)
+    recentApps.value = []
+    savedJobs.value = []
   } finally { loadingApps.value = false }
 })
-
-function sampleApps() {
-  return [
-    { id:1, status:'Shortlisted', job:{ id:1, title:'Senior Frontend Dev', company:{name:'TechCorp'}, location:'Remote' }},
-    { id:2, status:'Pending',     job:{ id:2, title:'Product Designer',     company:{name:'Designify'}, location:'NY' }},
-    { id:3, status:'Reviewed',    job:{ id:3, title:'Data Scientist',       company:{name:'DataFlow'}, location:'Remote' }},
-  ]
-}
-function sampleSaved() {
-  return [
-    { id:4, title:'DevOps Engineer', company:{name:'CloudBurst'} },
-    { id:5, title:'Marketing Manager', company:{name:'GrowthHQ'} },
-  ]
-}
 </script>

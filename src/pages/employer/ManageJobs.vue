@@ -94,9 +94,10 @@ async function fetchJobs() {
     const res = await employerApi.get('/employer/jobs', { params: { search: searchQ.value } })
     jobs.value  = res.data.content || res.data || []
     total.value = res.data.totalElements || jobs.value.length
-  } catch {
-    jobs.value = sampleJobs()
-    total.value = jobs.value.length
+  } catch (err) {
+    console.error('Failed to fetch jobs', err)
+    jobs.value = []
+    total.value = 0
   } finally { loading.value = false }
 }
 
@@ -113,9 +114,4 @@ async function doDelete() {
 }
 
 onMounted(fetchJobs)
-function sampleJobs() { return [
-  { id:1, title:'Senior Frontend Developer', location:'Remote', type:'Full-time', status:'Active', createdAt: new Date().toISOString(), applicationCount:12 },
-  { id:2, title:'Product Designer', location:'New York, NY', type:'Full-time', status:'Active', createdAt: new Date(Date.now()-86400000*2).toISOString(), applicationCount:8 },
-  { id:3, title:'Data Scientist', location:'Remote', type:'Remote', status:'Active', createdAt: new Date(Date.now()-86400000*5).toISOString(), applicationCount:15 },
-]}
 </script>

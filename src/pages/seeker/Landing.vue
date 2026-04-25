@@ -154,25 +154,45 @@ const featuredJobs = ref([])
 const search = ref({ keyword: '', location: '' })
 
 const stats = ref({ activeJobs: 12480 })
-const statCards = [
-  { value: '12,480+', label: 'Active Jobs' },
-  { value: '4,200+', label: 'Companies Hiring' },
-  { value: '98,000+', label: 'Job Seekers' },
-  { value: '92%', label: 'Placement Rate' },
-]
+onMounted(async () => {
+  try {
+    const [jobsRes, statsRes] = await Promise.all([
+      seekerApi.get('/jobs?page=0&size=6&featured=true'),
+      seekerApi.get('/stats/public')
+    ])
+    featuredJobs.value = jobsRes.data.content || jobsRes.data || []
+    if (statsRes.data) {
+      stats.value.activeJobs = statsRes.data.activeJobs || 0
+      statCards.value[0].value = (statsRes.data.activeJobs || 0).toLocaleString() + '+'
+      statCards.value[1].value = (statsRes.data.companiesHiring || 0).toLocaleString() + '+'
+      
+      if (statsRes.data.categories) {
+        categories.value.forEach(cat => {
+          if (statsRes.data.categories[cat.name] !== undefined) {
+            cat.count = statsRes.data.categories[cat.name].toString()
+          }
+        })
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load landing data', err)
+  } finally {
+    loadingJobs.value = false
+  }
+})
 
 const popularTags = ['Remote', 'Python', 'React', 'Full-Stack', 'Design', 'Marketing', 'Sales']
 
-const categories = [
-  { name: 'Technology',   icon: '💻', count: '3.2k', bg: 'bg-blue-100 dark:bg-blue-900/30' },
-  { name: 'Design',       icon: '🎨', count: '1.1k', bg: 'bg-purple-100 dark:bg-purple-900/30' },
-  { name: 'Marketing',    icon: '📣', count: '980',  bg: 'bg-pink-100 dark:bg-pink-900/30' },
-  { name: 'Finance',      icon: '💰', count: '760',  bg: 'bg-emerald-100 dark:bg-emerald-900/30' },
-  { name: 'Healthcare',   icon: '🏥', count: '1.4k', bg: 'bg-red-100 dark:bg-red-900/30' },
-  { name: 'Sales',        icon: '🤝', count: '890',  bg: 'bg-amber-100 dark:bg-amber-900/30' },
-  { name: 'Education',    icon: '📚', count: '540',  bg: 'bg-cyan-100 dark:bg-cyan-900/30' },
-  { name: 'Engineering',  icon: '⚙️',  count: '2.1k', bg: 'bg-orange-100 dark:bg-orange-900/30' },
-]
+const categories = ref([
+  { name: 'Technology',   icon: '💻', count: '0', bg: 'bg-blue-100 dark:bg-blue-900/30' },
+  { name: 'Design',       icon: '🎨', count: '0', bg: 'bg-purple-100 dark:bg-purple-900/30' },
+  { name: 'Marketing',    icon: '📣', count: '0',  bg: 'bg-pink-100 dark:bg-pink-900/30' },
+  { name: 'Finance',      icon: '💰', count: '0',  bg: 'bg-emerald-100 dark:bg-emerald-900/30' },
+  { name: 'Healthcare',   icon: '🏥', count: '0', bg: 'bg-red-100 dark:bg-red-900/30' },
+  { name: 'Sales',        icon: '🤝', count: '0',  bg: 'bg-amber-100 dark:bg-amber-900/30' },
+  { name: 'Education',    icon: '📚', count: '0',  bg: 'bg-cyan-100 dark:bg-cyan-900/30' },
+  { name: 'Engineering',  icon: '⚙️',  count: '0', bg: 'bg-orange-100 dark:bg-orange-900/30' },
+])
 
 const steps = [
   { icon: '📝', title: 'Create Your Profile', desc: 'Sign up free and build a standout profile that showcases your skills and experience.' },
@@ -190,26 +210,10 @@ function searchByCategory(name) {
   router.push({ path: '/jobs', query: { category: name } })
 }
 
-onMounted(async () => {
-  try {
-    const res = await seekerApi.get('/jobs?page=0&size=6&featured=true')
-    featuredJobs.value = res.data.content || res.data || []
-  } catch {
-    // Use placeholder data if backend not running
-    featuredJobs.value = placeholderJobs()
-  } finally {
-    loadingJobs.value = false
-  }
-})
-
-function placeholderJobs() {
-  return [
-    { id: 1, title: 'Senior Frontend Developer', company: { name: 'TechCorp Inc.' }, location: 'San Francisco, CA', type: 'Full-time', salaryMin: 120000, salaryMax: 160000, tags: ['React', 'TypeScript'], createdAt: new Date().toISOString(), remote: true },
-    { id: 2, title: 'Product Designer', company: { name: 'Designify' }, location: 'New York, NY', type: 'Full-time', salaryMin: 90000, salaryMax: 130000, tags: ['Figma', 'UX'], createdAt: new Date().toISOString(), remote: false },
-    { id: 3, title: 'Data Scientist', company: { name: 'DataFlow AI' }, location: 'Remote', type: 'Remote', salaryMin: 110000, salaryMax: 150000, tags: ['Python', 'ML'], createdAt: new Date().toISOString(), remote: true },
-    { id: 4, title: 'DevOps Engineer', company: { name: 'CloudBurst' }, location: 'Austin, TX', type: 'Full-time', salaryMin: 105000, salaryMax: 140000, tags: ['AWS', 'Kubernetes'], createdAt: new Date().toISOString(), remote: false },
-    { id: 5, title: 'Marketing Manager', company: { name: 'GrowthHQ' }, location: 'Chicago, IL', type: 'Full-time', salaryMin: 75000, salaryMax: 100000, tags: ['SEO', 'Analytics'], createdAt: new Date().toISOString(), remote: false },
-    { id: 6, title: 'Backend Engineer (Go)', company: { name: 'Finvest' }, location: 'Remote', type: 'Remote', salaryMin: 130000, salaryMax: 170000, tags: ['Go', 'PostgreSQL'], createdAt: new Date().toISOString(), remote: true },
-  ]
-}
+const statCards = ref([
+  { value: '12,480+', label: 'Active Jobs' },
+  { value: '4,200+', label: 'Companies Hiring' },
+  { value: '98,000+', label: 'Job Seekers' },
+  { value: '92%', label: 'Placement Rate' },
+])
 </script>

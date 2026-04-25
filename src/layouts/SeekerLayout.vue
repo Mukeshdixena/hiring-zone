@@ -39,6 +39,7 @@
                 </button>
                 <div v-if="profileOpen" class="absolute right-0 top-full mt-2 w-48 card shadow-xl py-1 z-50">
                   <RouterLink to="/dashboard" @click="profileOpen=false" class="flex items-center gap-2 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">Dashboard</RouterLink>
+                  <RouterLink to="/profile" @click="profileOpen=false" class="flex items-center gap-2 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">My Profile</RouterLink>
                   <RouterLink to="/applications" @click="profileOpen=false" class="flex items-center gap-2 px-4 py-2.5 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors">My Applications</RouterLink>
                   <div class="border-t border-surface-200 dark:border-surface-700 my-1"/>
                   <button @click="handleLogout" id="seeker-logout-btn" class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Sign Out</button>
@@ -68,6 +69,7 @@
             <RouterLink to="/jobs" @click="mobileOpen=false" class="mobile-nav-link">Browse Jobs</RouterLink>
             <template v-if="seekerAuth.isAuthenticated">
               <RouterLink to="/dashboard" @click="mobileOpen=false" class="mobile-nav-link">Dashboard</RouterLink>
+              <RouterLink to="/profile" @click="mobileOpen=false" class="mobile-nav-link">My Profile</RouterLink>
               <RouterLink to="/applications" @click="mobileOpen=false" class="mobile-nav-link">My Applications</RouterLink>
               <button @click="handleLogout" class="mobile-nav-link text-left text-red-500">Sign Out</button>
             </template>

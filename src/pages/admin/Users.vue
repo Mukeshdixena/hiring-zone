@@ -91,10 +91,14 @@ async function fetchUsers() {
   try {
     const res = await adminApi.get('/admin/users', { params: { page: currentPage.value, size: 15, search: searchQ.value, status: statusFilter.value }})
     users.value      = res.data.content || res.data || []
+    users.value      = res.data.content || res.data || []
     total.value      = res.data.totalElements || users.value.length
     totalPages.value = res.data.totalPages || 1
-  } catch { users.value = sampleUsers(); total.value = users.value.length }
-  finally   { loading.value = false }
+  } catch (err) {
+    console.error('Failed to fetch users', err)
+    users.value = []
+    total.value = 0
+  } finally { loading.value = false }
 }
 
 async function toggleSuspend(user) {
@@ -116,12 +120,4 @@ async function deleteUser(user) {
 
 function goToPage(p) { currentPage.value = p; fetchUsers() }
 onMounted(fetchUsers)
-
-function sampleUsers() { return [
-  { id:1, name:'Alice Johnson',  email:'alice@example.com', joinedAt:'2024-01-15', applicationCount:12, suspended:false },
-  { id:2, name:'Bob Smith',      email:'bob@example.com',   joinedAt:'2024-02-03', applicationCount:5,  suspended:false },
-  { id:3, name:'Carol White',    email:'carol@example.com', joinedAt:'2024-01-28', applicationCount:0,  suspended:true  },
-  { id:4, name:'Dan Brown',      email:'dan@example.com',   joinedAt:'2024-03-10', applicationCount:8,  suspended:false },
-  { id:5, name:'Eva Green',      email:'eva@example.com',   joinedAt:'2024-03-15', applicationCount:3,  suspended:false },
-]}
 </script>

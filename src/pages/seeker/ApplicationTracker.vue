@@ -102,22 +102,13 @@ async function fetchApps() {
     const res = await seekerApi.get('/applications', { params })
     applications.value = res.data.content || res.data || []
     totalPages.value   = res.data.totalPages || 1
-  } catch {
-    applications.value = sampleApps()
+  } catch (err) {
+    console.error('Failed to fetch applications', err)
+    applications.value = []
     totalPages.value = 1
   } finally { loading.value = false }
 }
 
 function goToPage(p) { currentPage.value = p; fetchApps() }
 onMounted(fetchApps)
-
-function sampleApps() {
-  return [
-    { id:1, status:'Shortlisted', appliedAt: new Date(Date.now()-86400000*2).toISOString(), job:{ id:1, title:'Senior Frontend Developer', company:{name:'TechCorp'}, location:'Remote' }},
-    { id:2, status:'Pending',     appliedAt: new Date(Date.now()-86400000*3).toISOString(), job:{ id:2, title:'Product Designer',           company:{name:'Designify'}, location:'New York, NY' }},
-    { id:3, status:'Reviewed',    appliedAt: new Date(Date.now()-86400000*5).toISOString(), job:{ id:3, title:'Data Scientist',             company:{name:'DataFlow AI'}, location:'Remote' }},
-    { id:4, status:'Rejected',    appliedAt: new Date(Date.now()-86400000*7).toISOString(), job:{ id:4, title:'Marketing Manager',         company:{name:'GrowthHQ'}, location:'Chicago, IL' }},
-    { id:5, status:'Hired',       appliedAt: new Date(Date.now()-86400000*14).toISOString(), job:{ id:5, title:'Backend Engineer',         company:{name:'CloudBurst'}, location:'Austin, TX' }},
-  ]
-}
 </script>

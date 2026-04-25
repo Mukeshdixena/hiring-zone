@@ -63,7 +63,10 @@ async function fetchJobs() {
   try {
     const res = await adminApi.get('/admin/jobs', { params: { search: searchQ.value, flagged: flagFilter.value === 'flagged' }})
     jobs.value = res.data.content || res.data || []
-  } catch { jobs.value = sampleJobs() }
+  } catch (err) {
+    console.error('Failed to fetch jobs', err)
+    jobs.value = []
+  }
 }
 
 async function toggleFlag(job) {
@@ -80,9 +83,4 @@ async function deleteJob(job) {
   catch { toast.error('Failed') }
 }
 onMounted(fetchJobs)
-function sampleJobs() { return [
-  { id:1, title:'Senior Frontend Dev', company:{name:'TechCorp'}, location:'Remote', type:'Full-time', applicationCount:12, flagged:false, expired:false },
-  { id:2, title:'Fake Data Entry Job', company:{name:'SpamCo'},   location:'Anywhere', type:'Part-time', applicationCount:0, flagged:true, expired:false },
-  { id:3, title:'Product Designer',    company:{name:'Designify'}, location:'NY', type:'Full-time', applicationCount:8, flagged:false, expired:false },
-]}
 </script>

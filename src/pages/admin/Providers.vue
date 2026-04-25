@@ -64,7 +64,10 @@ async function fetchProviders() {
   try {
     const res = await adminApi.get('/admin/providers', { params: { search: searchQ.value, verified: verifyFilter.value }})
     providers.value = res.data.content || res.data || []
-  } catch { providers.value = sampleProviders() }
+  } catch (err) {
+    console.error('Failed to fetch providers', err)
+    providers.value = []
+  }
 }
 
 async function verify(p) {
@@ -81,10 +84,4 @@ async function deleteProv(p) {
   catch { toast.error('Failed') }
 }
 onMounted(fetchProviders)
-function sampleProviders() { return [
-  { id:1, companyName:'TechCorp Inc.',   industry:'Technology', email:'hr@techcorp.com',   jobCount:8,  verified:true,  suspended:false },
-  { id:2, companyName:'Designify',       industry:'Design',     email:'hello@designify.io', jobCount:3, verified:true,  suspended:false },
-  { id:3, companyName:'DataFlow AI',     industry:'Technology', email:'jobs@dataflow.ai',  jobCount:5,  verified:false, suspended:false },
-  { id:4, companyName:'GrowthHQ',        industry:'Marketing',  email:'team@growthhq.com', jobCount:2,  verified:true,  suspended:true  },
-]}
 </script>

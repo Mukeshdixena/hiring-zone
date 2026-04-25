@@ -93,7 +93,11 @@ async function fetchApps() {
     const res = await employerApi.get(`/employer/jobs/${route.params.id}/applications`, { params })
     applications.value = res.data.content || res.data || []
     total.value        = res.data.totalElements || applications.value.length
-  } catch { applications.value = sampleApps() }
+  } catch (err) {
+    console.error('Failed to fetch applicants', err)
+    applications.value = []
+    total.value = 0
+  }
   finally   { loading.value = false }
 }
 
@@ -109,14 +113,10 @@ onMounted(async () => {
   try {
     const res = await employerApi.get(`/employer/jobs/${route.params.id}`)
     job.value = res.data
-  } catch { job.value = { title: 'Senior Frontend Developer' } }
+  } catch { 
+    toast.error('Failed to load job details')
+  }
   finally   { loadingJob.value = false }
   fetchApps()
 })
-
-function sampleApps() { return [
-  { id:1, applicantName:'Alice Johnson', applicantEmail:'alice@example.com', status:'Shortlisted', appliedAt: new Date(Date.now()-86400000*2).toISOString(), coverLetter:'I am very excited about this opportunity...', resumeUrl:'#' },
-  { id:2, applicantName:'Bob Smith',     applicantEmail:'bob@example.com',   status:'Pending',     appliedAt: new Date(Date.now()-86400000*3).toISOString(), coverLetter:'With 5 years of experience...', resumeUrl:'#' },
-  { id:3, applicantName:'Carol White',   applicantEmail:'carol@example.com', status:'Reviewed',    appliedAt: new Date(Date.now()-86400000*4).toISOString(), coverLetter:null, resumeUrl:'#' },
-]}
 </script>

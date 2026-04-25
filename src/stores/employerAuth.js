@@ -9,7 +9,7 @@ export const useEmployerAuthStore = defineStore('employerAuth', () => {
   const isAuthenticated = computed(() => !!token.value)
 
   async function login(email, password) {
-    const res = await employerApi.post('/employer/auth/login', { email, password })
+    const res = await employerApi.post('/auth/employer/login', { email, password })
     token.value   = res.data.token
     employer.value = res.data.employer
     localStorage.setItem('employer_token', token.value)
@@ -18,7 +18,7 @@ export const useEmployerAuthStore = defineStore('employerAuth', () => {
   }
 
   async function register(payload) {
-    const res = await employerApi.post('/employer/auth/register', payload)
+    const res = await employerApi.post('/auth/employer/register', payload)
     token.value   = res.data.token
     employer.value = res.data.employer
     localStorage.setItem('employer_token', token.value)

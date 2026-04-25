@@ -156,9 +156,10 @@ async function fetchJobs() {
     jobs.value       = res.data.content || res.data || []
     total.value      = res.data.totalElements || jobs.value.length
     totalPages.value = res.data.totalPages || 1
-  } catch {
-    jobs.value = sampleJobs()
-    total.value = jobs.value.length
+  } catch (err) {
+    console.error('Failed to fetch jobs', err)
+    jobs.value = []
+    total.value = 0
     totalPages.value = 1
   } finally {
     loading.value = false
@@ -180,15 +181,4 @@ watch(() => route.query, () => {
   filters.value.category = route.query.category || ''
   fetchJobs()
 })
-
-function sampleJobs() {
-  return [
-    { id: 1, title: 'Senior Frontend Developer', company: { name: 'TechCorp' }, location: 'San Francisco, CA', type: 'Full-time', salaryMin: 120000, salaryMax: 160000, tags: ['React', 'TypeScript', 'GraphQL'], createdAt: new Date().toISOString(), remote: true },
-    { id: 2, title: 'Product Designer', company: { name: 'Designify' }, location: 'New York, NY', type: 'Full-time', salaryMin: 90000, salaryMax: 130000, tags: ['Figma', 'UX', 'Prototyping'], createdAt: new Date(Date.now()-86400000).toISOString(), remote: false },
-    { id: 3, title: 'Data Scientist', company: { name: 'DataFlow AI' }, location: 'Remote', type: 'Remote', salaryMin: 110000, salaryMax: 150000, tags: ['Python', 'ML', 'TensorFlow'], createdAt: new Date(Date.now()-172800000).toISOString(), remote: true },
-    { id: 4, title: 'Backend Engineer', company: { name: 'CloudBurst' }, location: 'Austin, TX', type: 'Full-time', salaryMin: 105000, salaryMax: 140000, tags: ['Node.js', 'PostgreSQL'], createdAt: new Date(Date.now()-259200000).toISOString(), remote: false },
-    { id: 5, title: 'Marketing Manager', company: { name: 'GrowthHQ' }, location: 'Chicago, IL', type: 'Full-time', salaryMin: 75000, salaryMax: 100000, tags: ['SEO', 'Content'], createdAt: new Date(Date.now()-345600000).toISOString(), remote: false },
-    { id: 6, title: 'Mobile Developer (iOS)', company: { name: 'AppWorks' }, location: 'Remote', type: 'Remote', salaryMin: 115000, salaryMax: 155000, tags: ['Swift', 'SwiftUI'], createdAt: new Date(Date.now()-432000000).toISOString(), remote: true },
-  ]
-}
 </script>

@@ -123,33 +123,49 @@ const services = [
   { name: 'File Storage',  online: true  },
 ]
 
-const recentActivity = [
-  { id:1, icon:'👤', iconBg:'bg-blue-900/40',    message:'New seeker registered: alice@example.com', time:'2 min ago' },
-  { id:2, icon:'🏢', iconBg:'bg-emp-900/40',     message:'New employer signed up: TechCorp Inc.',    time:'15 min ago' },
-  { id:3, icon:'💼', iconBg:'bg-violet-900/40',  message:'New job posted: Senior React Developer',  time:'32 min ago' },
-  { id:4, icon:'📤', iconBg:'bg-adm-900/40',     message:'50 applications submitted today',          time:'1 hr ago' },
-  { id:5, icon:'⚠️', iconBg:'bg-amber-900/40',   message:'Job flagged for review: ID #4821',         time:'2 hr ago' },
-]
-
-const recentUsers = ref([
-  { id:1, name:'Alice Johnson',  email:'alice@example.com', joined:'Today',      active:true },
-  { id:2, name:'Bob Smith',      email:'bob@example.com',   joined:'Yesterday',  active:true },
-  { id:3, name:'Carol White',    email:'carol@example.com', joined:'2 days ago', active:false },
-  { id:4, name:'Dan Brown',      email:'dan@example.com',   joined:'3 days ago', active:true },
-])
+const recentActivity = ref([])
+const recentUsers = ref([])
 
 onMounted(async () => {
   try {
-    const res = await adminApi.get('/admin/stats')
-    stats.value[0].value = res.data.totalSeekers?.toLocaleString() || '0'
-    stats.value[1].value = res.data.totalEmployers?.toLocaleString() || '0'
-    stats.value[2].value = res.data.activeJobs?.toLocaleString() || '0'
-    stats.value[3].value = res.data.totalApplications?.toLocaleString() || '0'
-  } catch {
-    stats.value[0].value = '98,342'
-    stats.value[1].value = '4,218'
-    stats.value[2].value = '12,480'
-    stats.value[3].value = '287,912'
+    const [statsRes, activityRes, usersRes] = await Promise.all([
+      adminApi.get('/admin/stats'),
+      adminApi.get('/admin/activity'),
+      adminApi.get('/admin/users?page=0&size=5')
+    ])
+    
+    stats.value[0].value = statsRes.data.totalSeekers?.toLocaleString() || '0'
+    stats.value[1].value = statsRes.data.totalEmployers?.toLocaleString() || '0'
+    stats.value[2].value = statsRes.data.activeJobs?.toLocaleString() || '0'
+    stats.value[3].value = statsRes.data.totalApplications?.toLocaleString() || '0'
+
+    recentActivity.value = activityRes.data.map(act => ({
+      ...act,
+      time: timeAgo(act.timestamp)
+    }))
+
+    recentUsers.value = usersRes.data.content.map(u => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      joined: timeAgo(u.createdAt),
+      active: !u.suspended
+    }))
+  } catch (err) {
+    console.error('Failed to load admin dashboard data', err)
+    // Fallback to some static data for demo if needed, but the user wants real APIs
   }
 })
+
+function timeAgo(date) {
+  if (!date) return ''
+  const seconds = Math.floor((new Date() - new Date(date)) / 1000)
+  if (seconds < 60) return 'Just now'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  return `${days}d ago`
+}
 </script>

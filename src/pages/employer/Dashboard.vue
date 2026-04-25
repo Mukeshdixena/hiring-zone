@@ -115,12 +115,14 @@ onMounted(async () => {
       employerApi.get('/employer/stats'),
     ])
     jobs.value      = jobsRes.data.content || jobsRes.data || []
-    recentApps.value = appsRes.data || []
+    recentApps.value = appsRes.data.content || appsRes.data || []
     if (statsRes.data) {
       stats.value[0].value = statsRes.data.activeJobs || '0'
       stats.value[1].value = statsRes.data.totalApplications || '0'
       stats.value[2].value = statsRes.data.shortlisted || '0'
       stats.value[3].value = statsRes.data.hired || '0'
+      // Reset trends to 0 as they aren't in the API yet
+      stats.value.forEach(s => s.trend = 0)
     }
   } catch {
     jobs.value = sampleJobs()

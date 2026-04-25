@@ -12,6 +12,7 @@ const SeekerLogin      = () => import('@/pages/seeker/Login.vue')
 const SeekerRegister   = () => import('@/pages/seeker/Register.vue')
 const SeekerDashboard  = () => import('@/pages/seeker/Dashboard.vue')
 const SeekerTracker    = () => import('@/pages/seeker/ApplicationTracker.vue')
+const SeekerProfile    = () => import('@/pages/seeker/Profile.vue')
 
 // ── Employer (/employers) ───────────────────────────────────────────────────
 const EmployerLayout   = () => import('@/layouts/EmployerLayout.vue')
@@ -57,6 +58,12 @@ const routes = [
         path: 'applications',
         name: 'seeker-tracker',
         component: SeekerTracker,
+        meta: { requiresAuth: 'seeker' },
+      },
+      {
+        path: 'profile',
+        name: 'seeker-profile',
+        component: SeekerProfile,
         meta: { requiresAuth: 'seeker' },
       },
     ],

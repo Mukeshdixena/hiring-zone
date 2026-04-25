@@ -9,7 +9,7 @@ export const useAdminAuthStore = defineStore('adminAuth', () => {
   const isAuthenticated = computed(() => !!token.value)
 
   async function login(email, password) {
-    const res = await adminApi.post('/admin/auth/login', { email, password })
+    const res = await adminApi.post('/auth/admin/login', { email, password })
     token.value = res.data.token
     admin.value = res.data.admin
     localStorage.setItem('admin_token', token.value)
