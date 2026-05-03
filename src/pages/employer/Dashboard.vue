@@ -118,11 +118,16 @@ onMounted(async () => {
     recentApps.value = appsRes.data.content || appsRes.data || []
     if (statsRes.data) {
       stats.value[0].value = statsRes.data.activeJobs || '0'
+      stats.value[0].trend = statsRes.data.activeJobsTrend || 0
+      
       stats.value[1].value = statsRes.data.totalApplications || '0'
+      stats.value[1].trend = statsRes.data.totalApplicationsTrend || 0
+      
       stats.value[2].value = statsRes.data.shortlisted || '0'
+      stats.value[2].trend = statsRes.data.shortlistedTrend || 0
+      
       stats.value[3].value = statsRes.data.hired || '0'
-      // Reset trends to 0 as they aren't in the API yet
-      stats.value.forEach(s => s.trend = 0)
+      stats.value[3].trend = statsRes.data.hiredTrend || 0
     }
   } catch {
     jobs.value = sampleJobs()

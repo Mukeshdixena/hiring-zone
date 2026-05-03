@@ -49,7 +49,7 @@
             <!-- Salary -->
             <div v-if="job.salaryMin" class="flex items-center gap-2 text-lg font-bold text-surface-900 dark:text-white">
               <svg class="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              ${{ formatSalary(job.salaryMin) }} – ${{ formatSalary(job.salaryMax) }} / year
+              ₹{{ formatSalary(job.salaryMin) }} – ₹{{ formatSalary(job.salaryMax) }} LPA
             </div>
           </div>
 
@@ -208,7 +208,8 @@ async function toggleSave() {
   } catch { saved.value = !saved.value }
 }
 
-const formatSalary = n => n >= 1000 ? (n/1000).toFixed(0)+'k' : n
+import { formatSalary } from '@/utils/format'
+
 const timeAgo = date => { if (!date) return ''; const d = Math.floor((Date.now()-new Date(date))/86400000); return d===0?'Today':d===1?'1d ago':d<7?`${d}d ago`:`${Math.floor(d/7)}w ago` }
 const typeColor = type => ({ 'Full-time':'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300','Part-time':'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300','Remote':'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300','Contract':'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300','Internship':'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300' }[type] || 'bg-surface-100 dark:bg-surface-700 text-surface-600')
 

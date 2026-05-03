@@ -49,8 +49,8 @@
       <div>
         <h2 class="text-lg font-bold text-surface-800 dark:text-surface-200 mb-4 pb-2 border-b border-surface-200 dark:border-surface-700">Compensation</h2>
         <div class="grid grid-cols-2 gap-4">
-          <Input id="job-salary-min" v-model="form.salaryMin" label="Min Salary (USD/yr)" type="number" placeholder="80000"/>
-          <Input id="job-salary-max" v-model="form.salaryMax" label="Max Salary (USD/yr)" type="number" placeholder="120000"/>
+          <Input id="job-salary-min" v-model="form.salaryMin" label="Min Salary (₹ / yr)" type="number" placeholder="500000"/>
+          <Input id="job-salary-max" v-model="form.salaryMax" label="Max Salary (₹ / yr)" type="number" placeholder="1500000"/>
         </div>
       </div>
 

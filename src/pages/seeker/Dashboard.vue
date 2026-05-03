@@ -135,10 +135,10 @@ onMounted(async () => {
     if (statsRes.data) {
       stats.value[0].value = (statsRes.data.totalApplications || 0).toString()
       stats.value[3].value = (statsRes.data.interviews || 0).toString()
+      stats.value[1].value = (statsRes.data.profileViews || 0).toString()
+      profileCompletion.value = statsRes.data.profileCompletion || 0
     }
     stats.value[2].value = (savedRes.data.totalElements || savedJobs.value.length).toString()
-    // Profile views (mocked)
-    stats.value[1].value = Math.floor(Math.random() * 50).toString()
   } catch (err) {
     console.error('Failed to load seeker dashboard', err)
     recentApps.value = []

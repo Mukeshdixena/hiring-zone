@@ -90,15 +90,31 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import Button from '@/components/shared/Button.vue'
+import { seekerApi } from '@/api/seeker'
+import { formatIndianNumber } from '@/utils/format'
 
-const empStats = [
-  { value: '98,000+', label: 'Active Candidates' },
-  { value: '4,200+',  label: 'Companies Hiring' },
-  { value: '12,480+', label: 'Jobs Posted' },
+const empStats = ref([
+  { value: '0', label: 'Active Candidates' },
+  { value: '0',  label: 'Companies Hiring' },
+  { value: '0', label: 'Jobs Posted' },
   { value: '< 5min',  label: 'To Post a Job' },
-]
+])
+
+onMounted(async () => {
+  try {
+    const res = await seekerApi.get('/stats/public')
+    if (res.data) {
+      empStats.value[0].value = formatIndianNumber(res.data.jobSeekers || 0) + '+'
+      empStats.value[1].value = formatIndianNumber(res.data.companiesHiring || 0) + '+'
+      empStats.value[2].value = formatIndianNumber(res.data.activeJobs || 0) + '+'
+    }
+  } catch (err) {
+    console.error('Failed to load stats', err)
+  }
+})
 
 const features = [
   { icon: '📢', title: 'Unlimited Job Posts',    desc: 'Post as many jobs as you need — forever free, no limits, no hidden costs.',           bg: 'bg-emp-100 dark:bg-emp-900/30' },

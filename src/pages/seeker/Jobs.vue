@@ -36,11 +36,11 @@
             <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-3">Min Salary</p>
             <select id="salary-filter" v-model="filters.minSalary" class="w-full rounded-xl border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm px-3 py-2.5 text-surface-800 dark:text-surface-200 focus:outline-none focus:ring-2 focus:ring-brand-500/40">
               <option value="">Any</option>
-              <option value="30000">$30k+</option>
-              <option value="60000">$60k+</option>
-              <option value="90000">$90k+</option>
-              <option value="120000">$120k+</option>
-              <option value="150000">$150k+</option>
+              <option value="300000">₹3 Lakh+</option>
+              <option value="600000">₹6 Lakh+</option>
+              <option value="1000000">₹10 Lakh+</option>
+              <option value="1500000">₹15 Lakh+</option>
+              <option value="2500000">₹25 Lakh+</option>
             </select>
           </div>
 

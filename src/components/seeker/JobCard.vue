@@ -27,7 +27,7 @@
     <!-- Footer -->
     <div class="flex items-center justify-between pt-3 border-t border-surface-100 dark:border-surface-700">
       <div class="text-sm font-bold text-surface-800 dark:text-surface-200">
-        <span v-if="job.salaryMin">${{ formatSalary(job.salaryMin) }} – ${{ formatSalary(job.salaryMax) }}</span>
+        <span v-if="job.salaryMin">₹{{ formatSalary(job.salaryMin) }} – ₹{{ formatSalary(job.salaryMax) }}</span>
         <span v-else class="text-surface-400 font-normal text-xs">Salary not disclosed</span>
       </div>
       <div class="flex items-center gap-2">
@@ -39,12 +39,10 @@
 </template>
 
 <script setup>
+import { formatSalary } from '@/utils/format'
+
 defineProps({ job: { type: Object, required: true } })
 
-function formatSalary(n) {
-  if (n >= 1000) return (n / 1000).toFixed(0) + 'k'
-  return n
-}
 function timeAgo(date) {
   if (!date) return ''
   const diff = Date.now() - new Date(date).getTime()

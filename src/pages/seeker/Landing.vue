@@ -145,15 +145,15 @@ import Button from '@/components/shared/Button.vue'
 import Skeleton from '@/components/shared/Skeleton.vue'
 import JobCard from '@/components/seeker/JobCard.vue'
 import { seekerApi } from '@/api/seeker'
+import { formatIndianNumber } from '@/utils/format'
 
 const router   = useRouter()
 const searching = ref(false)
 const loadingJobs = ref(true)
 const featuredJobs = ref([])
-
 const search = ref({ keyword: '', location: '' })
-
 const stats = ref({ activeJobs: 12480 })
+
 onMounted(async () => {
   try {
     const [jobsRes, statsRes] = await Promise.all([
@@ -163,8 +163,8 @@ onMounted(async () => {
     featuredJobs.value = jobsRes.data.content || jobsRes.data || []
     if (statsRes.data) {
       stats.value.activeJobs = statsRes.data.activeJobs || 0
-      statCards.value[0].value = (statsRes.data.activeJobs || 0).toLocaleString() + '+'
-      statCards.value[1].value = (statsRes.data.companiesHiring || 0).toLocaleString() + '+'
+      statCards.value[0].value = formatIndianNumber(statsRes.data.activeJobs || 0) + '+'
+      statCards.value[1].value = formatIndianNumber(statsRes.data.companiesHiring || 0) + '+'
       
       if (statsRes.data.categories) {
         categories.value.forEach(cat => {
