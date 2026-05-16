@@ -72,9 +72,11 @@ Each platform stores its own JWT in `localStorage`:
 | Employer | `employer_token` | `employer_user` |
 | Admin | `admin_token` | `admin_user` |
 
-## Docker
-
-The included `Dockerfile` runs Vite dev server — suitable for local containerised development.  
-Pass `VITE_API_URL` via `docker-compose.yml` environment; Vite picks it up at startup.
-
 For production, run `npm run build` and serve the `dist/` folder with nginx or a static host.
+
+For GitHub Pages deploys, build with the deployed backend API URL:
+
+```bash
+$env:VITE_API_URL="https://your-backend-host/api"
+npm run deploy
+```
