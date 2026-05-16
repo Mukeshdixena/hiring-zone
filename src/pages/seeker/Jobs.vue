@@ -139,9 +139,22 @@ const searchLocation = ref(route.query.location || '')
 
 const filters = ref({ types: [], expLevels: [], minSalary: '', category: route.query.category || '' })
 
-const jobTypes  = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
-const expLevels = ['Entry Level', 'Mid Level', 'Senior Level', 'Lead', 'Manager']
-const categories = ['Technology', 'Design', 'Marketing', 'Finance', 'Healthcare', 'Sales', 'Education', 'Engineering']
+const jobTypes   = ref([])
+const expLevels  = ref([])
+const categories = ref([])
+
+async function fetchMeta() {
+  try {
+    const res = await seekerApi.get('/meta')
+    jobTypes.value   = res.data.jobTypes || []
+    expLevels.value  = res.data.experienceLevels || []
+    categories.value = res.data.categories || []
+  } catch {
+    jobTypes.value   = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
+    expLevels.value  = ['Entry Level', 'Mid Level', 'Senior Level', 'Lead', 'Manager']
+    categories.value = ['Technology', 'Design', 'Marketing', 'Finance', 'Healthcare', 'Sales', 'Education', 'Engineering']
+  }
+}
 
 async function fetchJobs() {
   loading.value = true
@@ -149,9 +162,11 @@ async function fetchJobs() {
     const params = {
       page: currentPage.value, size: 12, sort: sortBy.value,
       keyword: searchKeyword.value, location: searchLocation.value,
-      minSalary: filters.value.minSalary, category: filters.value.category,
-      types: filters.value.types.join(','), expLevels: filters.value.expLevels.join(','),
+      category: filters.value.category,
+      types: filters.value.types.join(','),
+      expLevels: filters.value.expLevels.join(','),
     }
+    if (filters.value.minSalary) params.minSalary = filters.value.minSalary
     const res = await seekerApi.get('/jobs', { params })
     jobs.value       = res.data.content || res.data || []
     total.value      = res.data.totalElements || jobs.value.length
@@ -174,7 +189,7 @@ function resetFilters() {
   currentPage.value = 0; fetchJobs()
 }
 
-onMounted(fetchJobs)
+onMounted(async () => { await fetchMeta(); fetchJobs() })
 watch(() => route.query, () => {
   searchKeyword.value  = route.query.keyword || ''
   searchLocation.value = route.query.location || ''

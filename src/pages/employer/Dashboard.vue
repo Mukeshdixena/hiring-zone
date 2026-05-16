@@ -129,21 +129,10 @@ onMounted(async () => {
       stats.value[3].value = statsRes.data.hired || '0'
       stats.value[3].trend = statsRes.data.hiredTrend || 0
     }
-  } catch {
-    jobs.value = sampleJobs()
-    recentApps.value = sampleApps()
-    stats.value[0].value='3'; stats.value[1].value='24'; stats.value[2].value='7'; stats.value[3].value='2'
+  } catch (err) {
+    console.error('Failed to load employer dashboard', err)
+    jobs.value = []
+    recentApps.value = []
   } finally { loading.value = false }
 })
-
-function sampleJobs() { return [
-  { id:1, title:'Senior Frontend Developer', location:'Remote', type:'Full-time', createdAt: new Date().toISOString(), applicationCount: 12 },
-  { id:2, title:'Product Designer',           location:'New York, NY', type:'Full-time', createdAt: new Date(Date.now()-86400000*2).toISOString(), applicationCount: 8 },
-  { id:3, title:'Data Scientist',             location:'Remote', type:'Remote', createdAt: new Date(Date.now()-86400000*5).toISOString(), applicationCount: 15 },
-]}
-function sampleApps() { return [
-  { id:1, applicantName:'Alice Johnson', status:'Shortlisted', job:{ title:'Senior Frontend Developer' }},
-  { id:2, applicantName:'Bob Smith',     status:'Pending',     job:{ title:'Product Designer' }},
-  { id:3, applicantName:'Carol White',   status:'Reviewed',    job:{ title:'Data Scientist' }},
-]}
 </script>

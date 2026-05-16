@@ -104,6 +104,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { employerApi } from '@/api/employer'
+import { seekerApi } from '@/api/seeker'
 import { useToastStore } from '@/stores/toast'
 import Button from '@/components/shared/Button.vue'
 import Input from '@/components/shared/Input.vue'
@@ -119,9 +120,9 @@ const tagInput = ref('')
 
 const form = ref({ title:'', type:'Full-time', experienceLevel:'Mid Level', location:'', category:'Technology', remote:false, salaryMin:'', salaryMax:'', description:'', requirements:'', benefits:'', tags:[], deadline:'' })
 
-const jobTypes  = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
-const expLevels = ['Entry Level', 'Mid Level', 'Senior Level', 'Lead', 'Manager', 'Director']
-const categories = ['Technology', 'Design', 'Marketing', 'Finance', 'Healthcare', 'Sales', 'Education', 'Engineering', 'Operations', 'Other']
+const jobTypes   = ref([])
+const expLevels  = ref([])
+const categories = ref([])
 
 function addTag() {
   const t = tagInput.value.trim()
@@ -151,6 +152,16 @@ async function submitJob() {
 }
 
 onMounted(async () => {
+  try {
+    const metaRes = await seekerApi.get('/meta')
+    jobTypes.value   = metaRes.data.jobTypes || []
+    expLevels.value  = metaRes.data.experienceLevels || []
+    categories.value = metaRes.data.categories || []
+  } catch {
+    jobTypes.value   = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
+    expLevels.value  = ['Entry Level', 'Mid Level', 'Senior Level', 'Lead', 'Manager', 'Director']
+    categories.value = ['Technology', 'Design', 'Marketing', 'Finance', 'Healthcare', 'Sales', 'Education', 'Engineering', 'Operations', 'Other']
+  }
   if (isEdit.value) {
     try {
       const res = await employerApi.get(`/employer/jobs/${route.query.edit}`)

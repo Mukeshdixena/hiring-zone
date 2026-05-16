@@ -156,16 +156,22 @@ const stats = ref({ activeJobs: 12480 })
 
 onMounted(async () => {
   try {
-    const [jobsRes, statsRes] = await Promise.all([
+    const [jobsRes, statsRes, metaRes] = await Promise.all([
       seekerApi.get('/jobs?page=0&size=6&featured=true'),
-      seekerApi.get('/stats/public')
+      seekerApi.get('/stats/public'),
+      seekerApi.get('/meta')
     ])
     featuredJobs.value = jobsRes.data.content || jobsRes.data || []
+    if (metaRes.data?.popularTags) {
+      popularTags.value = metaRes.data.popularTags
+    }
     if (statsRes.data) {
       stats.value.activeJobs = statsRes.data.activeJobs || 0
       statCards.value[0].value = formatIndianNumber(statsRes.data.activeJobs || 0) + '+'
       statCards.value[1].value = formatIndianNumber(statsRes.data.companiesHiring || 0) + '+'
-      
+      statCards.value[2].value = formatIndianNumber(statsRes.data.jobSeekers || 0) + '+'
+      statCards.value[3].value = (statsRes.data.placementRate || 0) + '%'
+
       if (statsRes.data.categories) {
         categories.value.forEach(cat => {
           if (statsRes.data.categories[cat.name] !== undefined) {
@@ -181,7 +187,7 @@ onMounted(async () => {
   }
 })
 
-const popularTags = ['Remote', 'Python', 'React', 'Full-Stack', 'Design', 'Marketing', 'Sales']
+const popularTags = ref(['Remote', 'Python', 'React', 'Full-Stack', 'Design', 'Marketing', 'Sales'])
 
 const categories = ref([
   { name: 'Technology',   icon: '💻', count: '0', bg: 'bg-blue-100 dark:bg-blue-900/30' },
