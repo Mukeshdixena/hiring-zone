@@ -1,0 +1,1 @@
+var e=e=>{if(!e)return`0`;let t=Number(e);return t>=1e7?(t/1e7).toFixed(1).replace(/\.0$/,``)+` Cr`:t>=1e5?(t/1e5).toFixed(1).replace(/\.0$/,``)+` Lakh`:t>=1e3?(t/1e3).toFixed(0)+`k`:t.toString()},t=e=>e?new Intl.NumberFormat(`en-IN`).format(e):`0`;export{e as n,t};
