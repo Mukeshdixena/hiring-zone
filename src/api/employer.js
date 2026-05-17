@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:9090/api'
+const BASE = import.meta.env.VITE_API_URL || 'https://hiring-zone-backend.onrender.com/api'
+const APP_BASE = import.meta.env.BASE_URL
 
 export const employerApi = axios.create({ baseURL: BASE })
 
@@ -16,7 +17,7 @@ employerApi.interceptors.response.use(
     if (err.response?.status === 401) {
       localStorage.removeItem('employer_token')
       localStorage.removeItem('employer_user')
-      window.location.href = '/employers/login'
+      window.location.href = `${APP_BASE}employers/login`
     }
     return Promise.reject(err)
   }

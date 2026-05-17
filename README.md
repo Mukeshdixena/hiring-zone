@@ -25,12 +25,12 @@ npm run preview    # preview production build
 Create `.env.local` (git-ignored) to override defaults:
 
 ```env
-VITE_API_URL=http://localhost:9090/api
+VITE_API_URL=https://hiring-zone-backend.onrender.com/api
 ```
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `VITE_API_URL` | `http://localhost:9090/api` | Backend API base URL |
+| `VITE_API_URL` | `https://hiring-zone-backend.onrender.com/api` | Backend API base URL |
 
 ## Project Structure
 
@@ -77,6 +77,6 @@ For production, run `npm run build` and serve the `dist/` folder with nginx or a
 For GitHub Pages deploys, build with the deployed backend API URL:
 
 ```bash
-$env:VITE_API_URL="https://your-backend-host/api"
+$env:VITE_API_URL="https://hiring-zone-backend.onrender.com/api"
 npm run deploy
 ```
