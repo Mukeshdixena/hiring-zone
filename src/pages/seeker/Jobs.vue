@@ -34,13 +34,22 @@
           <!-- Salary Range -->
           <div class="mb-5">
             <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-3">Min Salary</p>
+            <div class="grid grid-cols-2 gap-2 mb-3">
+              <button
+                v-for="period in salaryPeriods"
+                :key="period.value"
+                type="button"
+                :id="`salary-period-${period.value}`"
+                :aria-pressed="filters.salaryPeriod === period.value"
+                :class="['rounded-lg border px-3 py-2 text-xs font-semibold transition-all', filters.salaryPeriod === period.value ? 'bg-brand-600 border-brand-600 text-white shadow-sm' : 'border-surface-300 dark:border-surface-600 text-surface-600 dark:text-surface-300 hover:border-brand-400 hover:text-brand-600 dark:hover:text-brand-400']"
+                @click="setSalaryPeriod(period.value)"
+              >
+                {{ period.label }}
+              </button>
+            </div>
             <select id="salary-filter" v-model="filters.minSalary" class="w-full rounded-xl border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm px-3 py-2.5 text-surface-800 dark:text-surface-200 focus:outline-none focus:ring-2 focus:ring-brand-500/40">
               <option value="">Any</option>
-              <option value="300000">₹3 Lakh+</option>
-              <option value="600000">₹6 Lakh+</option>
-              <option value="1000000">₹10 Lakh+</option>
-              <option value="1500000">₹15 Lakh+</option>
-              <option value="2500000">₹25 Lakh+</option>
+              <option v-for="option in salaryOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
             </select>
           </div>
 
@@ -119,7 +128,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { seekerApi } from '@/api/seeker'
 import Button from '@/components/shared/Button.vue'
@@ -137,11 +146,39 @@ const sortBy  = ref('newest')
 const searchKeyword  = ref(route.query.keyword || '')
 const searchLocation = ref(route.query.location || '')
 
-const filters = ref({ types: [], expLevels: [], minSalary: '', category: route.query.category || '' })
+const filters = ref({ types: [], expLevels: [], minSalary: '', salaryPeriod: 'monthly', category: route.query.category || '' })
 
 const jobTypes   = ref([])
 const expLevels  = ref([])
 const categories = ref([])
+
+const salaryPeriods = [
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'annual', label: 'Annual' },
+]
+
+const monthlySalaryOptions = [
+  { value: 20000, label: 'Rs 20k+' },
+  { value: 30000, label: 'Rs 30k+' },
+  { value: 40000, label: 'Rs 40k+' },
+  { value: 50000, label: 'Rs 50k+' },
+  { value: 75000, label: 'Rs 75k+' },
+  { value: 100000, label: 'Rs 1 Lakh+' },
+  { value: 150000, label: 'Rs 1.5 Lakh+' },
+  { value: 200000, label: 'Rs 2 Lakh+' },
+]
+
+const annualSalaryOptions = [
+  { value: 300000, label: 'Rs 3 Lakh+' },
+  { value: 600000, label: 'Rs 6 Lakh+' },
+  { value: 1000000, label: 'Rs 10 Lakh+' },
+  { value: 1500000, label: 'Rs 15 Lakh+' },
+  { value: 2500000, label: 'Rs 25 Lakh+' },
+]
+
+const salaryOptions = computed(() => (
+  filters.value.salaryPeriod === 'monthly' ? monthlySalaryOptions : annualSalaryOptions
+))
 
 async function fetchMeta() {
   try {
@@ -166,7 +203,8 @@ async function fetchJobs() {
       types: filters.value.types.join(','),
       expLevels: filters.value.expLevels.join(','),
     }
-    if (filters.value.minSalary) params.minSalary = filters.value.minSalary
+    const minSalary = annualizedMinSalary()
+    if (minSalary) params.minSalary = minSalary
     const res = await seekerApi.get('/jobs', { params })
     jobs.value       = res.data.content || res.data || []
     total.value      = res.data.totalElements || jobs.value.length
@@ -183,8 +221,19 @@ async function fetchJobs() {
 
 function applyFilters() { currentPage.value = 0; fetchJobs() }
 function goToPage(p) { currentPage.value = p; fetchJobs() }
+function setSalaryPeriod(period) {
+  if (filters.value.salaryPeriod === period) return
+  filters.value.salaryPeriod = period
+  filters.value.minSalary = ''
+}
+function annualizedMinSalary() {
+  if (!filters.value.minSalary) return null
+  const minSalary = Number(filters.value.minSalary)
+  if (Number.isNaN(minSalary)) return null
+  return filters.value.salaryPeriod === 'monthly' ? minSalary * 12 : minSalary
+}
 function resetFilters() {
-  filters.value = { types: [], expLevels: [], minSalary: '', category: '' }
+  filters.value = { types: [], expLevels: [], minSalary: '', salaryPeriod: 'monthly', category: '' }
   searchKeyword.value = ''; searchLocation.value = ''
   currentPage.value = 0; fetchJobs()
 }
