@@ -134,16 +134,21 @@ onMounted(async () => {
       adminApi.get('/admin/users?page=0&size=5')
     ])
     
-    stats.value[0].value = statsRes.data.totalSeekers?.toLocaleString() || '0'
-    stats.value[1].value = statsRes.data.totalEmployers?.toLocaleString() || '0'
-    stats.value[2].value = statsRes.data.activeJobs?.toLocaleString() || '0'
-    stats.value[3].value = statsRes.data.totalApplications?.toLocaleString() || '0'
+    const d = statsRes.data
+    stats.value[0].value = d.totalSeekers?.toLocaleString() || '0'
+    stats.value[1].value = d.totalEmployers?.toLocaleString() || '0'
+    stats.value[2].value = d.activeJobs?.toLocaleString() || '0'
+    stats.value[3].value = d.totalApplications?.toLocaleString() || '0'
+    stats.value[0].trend = d.seekerTrend      ?? 0
+    stats.value[1].trend = d.employerTrend    ?? 0
+    stats.value[2].trend = d.jobTrend         ?? 0
+    stats.value[3].trend = d.applicationTrend ?? 0
 
-    if (statsRes.data.healthMetrics) {
-      healthMetrics.value[0].value = statsRes.data.healthMetrics.jobFillRate || 68
-      healthMetrics.value[1].value = statsRes.data.healthMetrics.applicationSuccess || 42
-      healthMetrics.value[2].value = statsRes.data.healthMetrics.employerRetention || 85
-      healthMetrics.value[3].value = statsRes.data.healthMetrics.platformUptime || 99
+    if (d.healthMetrics) {
+      healthMetrics.value[0].value = d.healthMetrics.jobFillRate        ?? 68
+      healthMetrics.value[1].value = d.healthMetrics.applicationSuccess ?? 0
+      healthMetrics.value[2].value = d.healthMetrics.employerRetention  ?? 85
+      healthMetrics.value[3].value = d.healthMetrics.platformUptime     ?? 99
     }
 
     recentActivity.value = activityRes.data.map(act => ({
