@@ -1,4 +1,4 @@
-# HiringZone Frontend
+# 💼 HiringZone — Multi-Platform Recruitment Frontend
 
 Vue 3 + Vite single-page application powering three isolated job-portal platforms (Seeker, Employer, Admin).
 
